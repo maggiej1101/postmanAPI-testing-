@@ -10,7 +10,16 @@ pm.test("DataAPI-GetRules:Status Code", function () {
     pm.expect(jsonData.statusCode).to.eql(ResOK);
 });
 
-
+/×
+SELECT FDR.RuleID,FDR.Name,FDP.*,FDR.*
+FROM dataapidb.FDPartnerRules FDPR, dataapidb.FDRules FDR, dataapidb.FDPartners FDP
+where FDPR.PartnerID=FDP.PartnerID
+and FDPR.ruleID= FDR.ruleID
+and FDP.PartnerCode='BMY'
+and FDP.System='DTN'
+and (FDR.Context Like '%AU%' or FDR.Context like '%""%')
+and (FDPR.Context Like '%AU%' or FDPR.Context like '%""%');
+×/
 pm.test("DataAPI-GetRules: Verify Rules response", function () {
     var jsonPMData = pm.response.json();
     var allExists = 0
