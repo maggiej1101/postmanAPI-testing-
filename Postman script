@@ -1,0 +1,32 @@
+pm.test("DataAPI-GetRules:Status test", function () {
+    var ResOK= Number(pm.environment.get("StatusOK"));
+    pm.response.to.have.status(ResOK);
+    pm.response.to.be.ok;
+});
+
+pm.test("DataAPI-GetRules:Status Code", function () {
+    var jsonData = pm.response.json();
+    var ResOK= Number(pm.environment.get("StatusCode0"));
+    pm.expect(jsonData.statusCode).to.eql(ResOK);
+});
+
+
+pm.test("DataAPI-GetRules: Verify Rules response", function () {
+    var jsonPMData = pm.response.json();
+    var allExists = 0
+    pm.sendRequest(pm.environment.get("api-url") + `xjoin?_join=FDPR.FDPartnerRules,_j,FDR.FDRules,_j,FDP.FDPartners&_on1=(FDPR.ruleID,eq,FDR.ruleID)&_on2=(FDPR.PartnerID,eq,FDP.PartnerID)&_fields=FDR.RuleID,FDR.Name&_where=(FDP.PartnerCode,eq,${pm.environment.get('Partner_Code')})~and(FDP.System,eq,${pm.environment.get('System_Code')})~and((FDR.Context,like,~${pm.environment.get('Asset_Type')}~)~or(FDR.Context,like,~""~))` + `~and((FDPR.Context,like,~${pm.environment.get('Asset_Type')}~)~or(FDPR.Context,like,~""~))`, (error, dbresponse) => {
+pm.globals.get("variable_key");
+        pm.expect(jsonPMData.output.length).to.eql(dbresponse.json().length);
+        for(var i=0; i< jsonPMData.output.length; i++){
+            for(var j=0; j<dbresponse.json().length;j++){
+                if(jsonPMData.output[i].ruleID == dbresponse.json()[j].FDR_RuleID){
+                    if(jsonPMData.output[i].name == dbresponse.json()[j].FDR_Name){
+                        console.log('ruleid----'+dbresponse.json()[j].FDR_RuleID+'FDR_Name'+dbresponse.json()[j].FDR_Name);
+                        allExists = allExists+1;
+                    }
+                }
+            }
+        }
+        pm.expect(allExists).to.eql(jsonPMData.output.length);
+    })
+});
