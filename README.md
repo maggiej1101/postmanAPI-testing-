@@ -1,4 +1,3 @@
-Environment Setup 
   Connect to Database​
     1.xmysql, is developed on top of Node.js library. So, first Install Node: https://nodejs.org/en/download/​
     2.Once the installation for Node.js is completed, goto CMD and download xmysql package, using “npm install -g xmysql” command.​
